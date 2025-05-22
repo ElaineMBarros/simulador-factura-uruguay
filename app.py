@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from io import BytesIO
 
 st.set_page_config(page_title="Simulador de Nota Fiscal - Uruguai", layout="wide")
 st.title("🧾 Simulador de Nota Fiscal - Uruguai")
@@ -12,8 +13,8 @@ quantidade = st.sidebar.number_input("Quantidade", min_value=1, step=1)
 preco_folheto = st.sidebar.number_input("Preço Unitário (Folheto)", min_value=0.0, step=0.01)
 percentual_comissao = st.sidebar.number_input("Percentual de Comissão (%)", min_value=0.0, step=0.01)
 iva_percentual = st.sidebar.number_input("Percentual de IVA (%)", min_value=0.0, step=0.01)
-imesi_percentual = st.sidebar.number_input("Percentual de IMESI (%)", min_value=0.0, step=0.01)
-percepcion_iva_percentual = st.sidebar.number_input("Percentual de Percepción IVA (%)", min_value=0.0, step=0.01)
+imesi_percentual = st.sidebar.number_input("Percentual de IMESI (% ou 0 se não tiver)", min_value=0.0, step=0.01)
+percepcion_iva_percentual = st.sidebar.number_input("Percentual de Percepción IVA (% ou 0 se não tiver)", min_value=0.0, step=0.01)
 
 if "produtos" not in st.session_state:
     st.session_state.produtos = []
@@ -43,6 +44,13 @@ def calcular_impostos(descricao, quantidade, preco_folheto, percentual_comissao,
         'Total Item': round(total_item, 2)
     }
 
+def gerar_excel(df):
+    output = BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='NotaFiscal')
+    output.seek(0)
+    return output
+
 if st.sidebar.button("Adicionar Produto"):
     if descricao != "" and preco_folheto > 0:
         produto = calcular_impostos(descricao, quantidade, preco_folheto, percentual_comissao, iva_percentual, imesi_percentual, percepcion_iva_percentual)
@@ -66,12 +74,15 @@ if len(st.session_state.produtos) > 0:
     st.write(f"**Comissão:** {totais['Comissão']:.2f}")
     st.write(f"**🔸 Total Geral da Nota:** {totais['Total Item']:.2f}")
 
-    # Exportar para Excel
     st.markdown("---")
     st.subheader("📥 Exportar Dados")
-    excel = df.to_excel(index=False, engine='openpyxl')
-    st.download_button("📥 Baixar Excel", data=excel, file_name="nota_fiscal_uruguay.xlsx")
-
+    excel_file = gerar_excel(df)
+    st.download_button(
+        label="📥 Baixar Excel",
+        data=excel_file,
+        file_name="nota_fiscal_uruguay.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 else:
     st.info("Nenhum produto adicionado ainda.")
 
