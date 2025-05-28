@@ -1,4 +1,4 @@
-# 🧾 Simulador de Factura - Uruguay
+# 🧾 Simulador de Nota Fiscal - Uruguai
 
 Este aplicativo permite simular a geração de uma nota fiscal no modelo fiscal do Uruguai, calculando corretamente:
 
@@ -12,7 +12,7 @@ Este aplicativo permite simular a geração de uma nota fiscal no modelo fiscal 
 
 ## 🚀 Deploy Online
 
-Acesse o app diretamente aqui: [Link do Streamlit]() — substitua com seu link após deploy.
+Acesse o app diretamente aqui: [Link do Streamlit]()
 
 ## 📦 Requisitos
 

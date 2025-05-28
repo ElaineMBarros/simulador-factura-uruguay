@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-from io import BytesIO
 
 st.set_page_config(page_title="Simulador Nota Fiscal Uruguai", layout="wide")
 st.title("🧾 Simulador de Nota Fiscal - Uruguai")
@@ -12,16 +11,12 @@ if 'produtos' not in st.session_state:
 def calcular_impostos(descricao, quantidade, preco_folheto, percentual_comissao, iva_percentual, imesi_percentual, percepcion_iva_percentual):
     valor_comissao = preco_folheto * (percentual_comissao / 100)
     parte_produto = preco_folheto - valor_comissao
-
     fator = 1 + (imesi_percentual / 100) + (1 + (imesi_percentual / 100)) * ((iva_percentual / 100) + (percepcion_iva_percentual / 100))
     na = parte_produto / fator
-
     imesi = na * (imesi_percentual / 100)
     iva = (na + imesi) * (iva_percentual / 100)
     percepcion_iva = (na + imesi) * (percepcion_iva_percentual / 100)
-
     total_item = (na + imesi + iva + percepcion_iva + valor_comissao) * quantidade
-
     return {
         'Descrição': descricao,
         'Qtd': quantidade,
@@ -66,16 +61,17 @@ if st.sidebar.button("Adicionar Produto"):
     )
     st.session_state.produtos.append(produto)
 
-st.sidebar.header("Adicionar Frete e Taxa")
-if st.sidebar.button("Adicionar Frete"):
-    valor_frete = st.sidebar.number_input("Valor do Frete (com IVA)", min_value=0.0, step=0.01)
-    iva_frete = st.sidebar.number_input("IVA do Frete (%)", min_value=0.0, step=0.01)
-    st.session_state.produtos.append(adicionar_item_com_iva("Frete", valor_frete, iva_frete))
+with st.sidebar.expander("Adicionar Frete"):
+    valor_frete = st.number_input("Valor do Frete (com IVA)", min_value=0.0, step=0.01)
+    iva_frete = st.number_input("IVA do Frete (%)", min_value=0.0, step=0.01)
+    if st.button("Confirmar Frete"):
+        st.session_state.produtos.append(adicionar_item_com_iva("Frete", valor_frete, iva_frete))
 
-if st.sidebar.button("Adicionar Taxa Administrativa"):
-    valor_taxa = st.sidebar.number_input("Valor da Taxa Administrativa (com IVA)", min_value=0.0, step=0.01)
-    iva_taxa = st.sidebar.number_input("IVA da Taxa (%)", min_value=0.0, step=0.01)
-    st.session_state.produtos.append(adicionar_item_com_iva("Taxa Administrativa", valor_taxa, iva_taxa))
+with st.sidebar.expander("Adicionar Taxa Administrativa"):
+    valor_taxa = st.number_input("Valor da Taxa Administrativa (com IVA)", min_value=0.0, step=0.01)
+    iva_taxa = st.number_input("IVA da Taxa (%)", min_value=0.0, step=0.01)
+    if st.button("Confirmar Taxa Administrativa"):
+        st.session_state.produtos.append(adicionar_item_com_iva("Taxa Administrativa", valor_taxa, iva_taxa))
 
 if st.sidebar.button("Limpar Nota"):
     st.session_state.produtos = []
