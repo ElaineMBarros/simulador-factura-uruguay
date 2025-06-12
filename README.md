@@ -1,42 +1,18 @@
-# 🧾 Simulador de Nota Fiscal - Uruguai
+# Simulador de Fatura - Uruguai 🇺🇾
 
-Este aplicativo permite simular a geração de uma nota fiscal no modelo fiscal do Uruguai, calculando corretamente:
+Este projeto simula o cálculo de impostos em notas fiscais de pedidos no Uruguai, incluindo IMESI, IVA, Percepción IVA, frete e taxa administrativa.
 
-- Base de Produto
-- IMESI
-- IVA
-- Percepción IVA
-- Comissão
-- Total por Item
-- Total da Nota Fiscal
+### Funcionalidades
+- Entrada de dados por produto (preço tabela, comissão, desconto promocional).
+- Cálculo de impostos conforme regras fiscais uruguaias.
+- Inclusão de frete e taxa com IVA por dentro.
+- Exportação para Excel com colunas detalhadas.
 
-## 🚀 Deploy Online
+### Como executar
 
-Acesse o app diretamente aqui: [Link do Streamlit]()
-
-## 📦 Requisitos
-
-- streamlit
-- pandas
-- openpyxl
-
-## ▶️ Como rodar localmente
-
-1. Clone este repositório:
-```
-git clone https://github.com/seu-usuario/simulador-factura-uruguay.git
-```
-
-2. Instale as dependências:
-```
+```bash
 pip install -r requirements.txt
-```
-
-3. Execute o aplicativo:
-```
 streamlit run app.py
 ```
 
-## 💡 Sobre
-
-Desenvolvido para validação dos impostos com as faturas emitidas no modelo fiscal uruguaio.
+Desenvolvido com ❤️ para análises fiscais e automação de processos.
